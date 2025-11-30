@@ -5,69 +5,61 @@
 <header class="bg-secondary py-5 border border-warning rounded-2">
     <div class="container px-4 px-lg-5 my-5">
         <div class="text-center text-warning">
-            <h1 class="display-4 fw-bolder">Shop in style</h1>
-            <p class="lead fw-bold text-warning-50 mb-0">Great Products for You to Consider</p>
+            <h1 class="display-4 fw-bolder">Shopping Cart</h1>
+            <p class="lead fw-bold text-warning-50 mb-0">Items in Your Cart</p>
         </div>
     </div>
 </header>
 
-
-<!-- Section-->
+<br><br>
 <section class="py-5">
     <div class="container px-4 px-lg-5 mt-5">
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            {% for prod in products %}
-                {% if prod.is_sale %}
+            {% for product in cart_products %}
+                {% if product.is_sale %}
                     <div class="col mb-5">
                         <div class="card h-100">
                             <!-- Sale Badge -->
                                 <div class="badge bg-dark text-white position-absolute" style="top:0.5rem; right: 0.5rem">Sale</div>
                             <!-- Product image-->
-                            <img class="card-img-top" src="{{prod.image.url}}" alt="..." />
+                            <img class="card-img-top" src="{{product.image.url}}" alt="..." />
                             <!-- Product details-->
                             <div class="card-body p-4">
                                 <div class="text-center">
                                     <!-- Product name-->
-                                    <h5 class="fw-bolder">{{ prod.name }}</h5>
+                                    <h5 class="fw-bolder">{{ product.name }}</h5>
                                     <div class="d-flex justify-content-center fw-normal text-warning bg-black mb-2">
                                         <div class="bi-star-fill"></div>
                                         &nbsp;&nbsp;Sale!!&nbsp;&nbsp;
                                         <div class="bi-star-fill"></div>
                                     </div>
                                     <!-- Product price-->
-                                        <strike>${{ prod.price }}</strike>
-                                    ${{ prod.sale_price }}
+                                        <strike>${{ product.price }}</strike>
+                                    ${{ product.sale_price }}
                                 </div>
                             </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'product' prod.id %}">Product Details</a></div>
-                            </div>
-                        </div>
+                         </div>
                     </div>
                 {% else %}
                     <div class="col mb-5">
                         <div class="card h-100">
                             <!-- Product image-->
-                            <img class="card-img-top" src="{{prod.image.url}}" alt="..." />
+                            <img class="card-img-top" src="{{product.image.url}}" alt="..." />
                             <!-- Product details-->
                             <div class="card-body p-4">
                                 <div class="text-center">
                                     <!-- Product name-->
-                                    <h5 class="fw-bolder">{{ prod.name }}</h5>
+                                    <h5 class="fw-bolder">{{ product.name }}</h5>
                                     <!-- Product price-->
-                                ${{ prod.price }}
+                                ${{ product.price }}
                                 </div>
                             </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'product' prod.id %}">Product Details</a></div>
-                            </div>
                         </div>
-                {% endif %}
                     </div>
+                {% endif %}
             {% endfor %}
         </div>
     </div>
 </section>
+
 {%endblock%}

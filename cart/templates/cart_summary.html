@@ -12,4 +12,162 @@
 </header>
 
 <br><br>
+<section class="py-3">
+    <div class="container px-4 px-lg-5 mt-3">
+        <div class="d-flex flex-row row-cols-2 row">
+            {% if cart_products %}
+                {% for product in cart_products %}
+                    {% if product.is_sale %}
+                        <div class="col mb-3">
+                            <div class="card mb-3" style="max-width: 540px;">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                    <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="...">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h5 class="card-title fw-bolder">{{ product.name }}</h5>
+                                            <p class="card-text">{{ product.description }}</p>
+                                            <p class="card-text text-center">
+                                                <div class="d-flex justify-content-center fw-normal text-warning bg-black mb-2">
+                                                    <div class="bi-star-fill"></div>
+                                                    &nbsp;&nbsp;Sale!!&nbsp;&nbsp;
+                                                    <div class="bi-star-fill"></div>
+                                                </div>
+                                            <!-- Product price-->
+                                            <center><strike>${{ product.price }}</strike>
+                                            ${{ product.sale_price }}</center>
+                                            </p>
+                                            <div class="row justify-content-center">
+                                                <div class="col-md-4">Quantity: </div>
+                                                <div class="col-md-4">
+                                                    <select class="form-select" id="select{{ product.id }}">
+                                                        <option selected>
+                                                            {% for key, value in quantities.items %}
+                                                                {% if key == product.id|slugify %}
+                                                                    {{ value }}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="3">4</option>
+                                                        <option value="3">5</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        <br>
+                                        <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+                                        <button class="btn btn-secondary update-cart" type="button" data-index="{{ product.id }}">Update</button>
+                                        <button class="btn btn-danger delete-product" type="button" data-index="{{ product.id }}">Delete</button>
+                                        <br><br>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col mb-3">
+                            <div class="card mb-3" style="max-width: 540px;">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                    <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="...">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h5 class="card-title fw-bolder">{{ product.name }}</h5>
+                                            <p class="card-text">{{ product.description }}</p>
+                                            <p class="card-text text-center">${{ product.price }}</p>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-md-4">Quantity: </div>
+                                            <div class="col-md-4">
+                                                <select class="form-select" id="select{{ product.id }}">
+                                                    <option selected>
+                                                        {% for key, value in quantities.items %}
+                                                            {% if key == product.id|slugify %}
+                                                                {{ value }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="3">4</option>
+                                                    <option value="3">5</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+                                        <button class="btn btn-secondary update-cart" type="button" data-index="{{ product.id }}">Update</button>
+                                        <button class="btn btn-danger delete-product" type="button" data-index="{{ product.id }}">Delete</button>
+                                        <br><br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                {% endfor %}
+            {% else %}
+                <h3 class="fw-bold">Your cart is empty. <a href="{% url 'home' %}" class="btn btn-secondary">Continue Shopping</a></h3>
+            {% endif %}
+        </div>
+        {% if cart_products %}
+        <div class="container"><h3>Cart Total: ${{ totals }}</h3></div>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+// Check for button press
+$(document).on('click', '.update-cart', function(e){
+    e.preventDefault();
+    // Get product id
+    var productid = $(this).data('index');
+    $.ajax({
+        type: 'POST',
+        url: '{% url "cart_update" %}',
+        data: {
+            product_id: $(this).data('index'),
+            product_qty: $('#select' + productid + ' option:selected').text(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post'
+        },
+        success: function(json){
+           //document.getElementById('cart_quantity').textContent = json.qty;
+           // console.log(json)
+           location.reload()
+        },
+        error: function(xhr, errmsg, err){
+        }
+    });
+})    
+
+// Check for button press
+$(document).on('click', '.delete-product', function(e){
+    e.preventDefault();
+    // Get product id
+    var productid = $(this).data('index');
+    $.ajax({
+        type: 'POST',
+        url: '{% url "cart_delete" %}',
+        data: {
+            product_id: $(this).data('index'),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post'
+        },
+        success: function(json){
+           //document.getElementById('cart_quantity').textContent = json.qty;
+           // console.log(json)
+           location.reload()
+        },
+        error: function(xhr, errmsg, err){
+        }
+    });
+})  
+</script>
+
 {%endblock%}
