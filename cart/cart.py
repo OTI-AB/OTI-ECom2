@@ -64,6 +64,7 @@ class Cart():
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
         quantities = self.cart
+        # Initialize total
         total = 0
         for key, value in quantities.items():
             key = int(key)

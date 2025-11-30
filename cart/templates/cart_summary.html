@@ -126,7 +126,7 @@
 $(document).on('click', '.update-cart', function(e){
     e.preventDefault();
     // Get product id
-    var productid = $(this).data('index');
+    const productid = $(this).data('index');
     $.ajax({
         type: 'POST',
         url: '{% url "cart_update" %}',
